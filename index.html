@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anushka's Game Zone</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #f8e8e0, #ead8c8);
+    color: #49352d;
+    text-align: center;
+}
+
+header {
+    padding: 35px 15px;
+    background: #795548;
+    color: white;
+}
+
+header h1 {
+    font-size: 35px;
+    margin: 5px;
+}
+
+header p {
+    font-size: 16px;
+}
+
+.container {
+    max-width: 950px;
+    margin: 30px auto;
+    padding: 15px;
+}
+
+.games {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #fffaf5;
+    padding: 25px 15px;
+    border-radius: 18px;
+    box-shadow: 0 5px 15px #00000015;
+}
+
+.card h2 {
+    font-size: 22px;
+}
+
+.card p {
+    color: #765e52;
+}
+
+button {
+    background: #795548;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 5px;
+}
+
+button:hover {
+    background: #5d4037;
+}
+
+.game-area {
+    display: none;
+    background: #fffaf5;
+    padding: 25px;
+    border-radius: 18px;
+    margin-top: 25px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #c9aa99;
+    border-radius: 8px;
+    margin: 8px;
+    max-width: 90%;
+}
+
+#result {
+    font-weight: bold;
+    margin: 15px;
+    font-size: 17px;
+}
+
+footer {
+    padding: 20px;
+    color: #795548;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎮 Anushka's Game Zone</h1>
+    <p>Welcome! Choose your favourite game and have fun ❤️</p>
+</header>
+
+<div class="container">
+
+    <h2>✨ Choose Your Game ✨</h2>
+
+    <div class="games">
+
+        <div class="card">
+            <h2>🎯 Guess the Number</h2>
+            <p>Guess a number between 1 and 10.</p>
+            <button onclick="openGame('guess')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h2>✊ Rock Paper Scissors</h2>
+            <p>Challenge the computer!</p>
+            <button onclick="openGame('rps')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h2>⌨️ Typing Speed Test</h2>
+            <p>Test your typing skills.</p>
+            <button onclick="openGame('typing')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h2>🧠 Quiz Game</h2>
+            <p>Answer fun questions.</p>
+            <button onclick="openGame('quiz')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h2>🔐 Password Generator</h2>
+            <p>Create a random password.</p>
+            <button onclick="openGame('password')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h2>🧮 Calculator</h2>
+            <p>Calculate anything easily.</p>
+            <button onclick="openGame('calculator')">Play Now</button>
+        </div>
+
+    </div>
+
+    <div class="game-area" id="gameArea">
+        <h2 id="gameTitle"></h2>
+        <div id="gameContent"></div>
+        <p id="result"></p>
+        <button onclick="closeGame()">⬅ Back to Games</button>
+    </div>
+
+</div>
+
+<footer>
+    Made with ❤️ by Anushka
+</footer>
+
+<script>
+
+let number = Math.floor(Math.random() * 10) + 1;
+let score = 0;
+let quizIndex = 0;
+
+function openGame(game) {
+    document.getElementById("gameArea").style.display = "block";
+    document.getElementById("gameTitle").innerText = "";
+    document.getElementById("gameContent").innerHTML = "";
+    document.getElementById("result").innerText = "";
+
+    if (game === "guess") guessGame();
+    if (game === "rps") rpsGame();
+    if (game === "typing") typingGame();
+    if (game === "quiz") quizGame();
+    if (game === "password") passwordGame();
+    if (game === "calculator") calculatorGame();
+
+    document.getElementById("gameArea").scrollIntoView({behavior:"smooth"});
+}
+
+function closeGame() {
+    document.getElementById("gameArea").style.display = "none";
+}
+
+function guessGame() {
+    number = Math.floor(Math.random() * 10) + 1;
+    document.getElementById("gameTitle").innerText = "🎯 Guess the Number";
+    document.getElementById("gameContent").innerHTML = `
+        <p>Enter a number between 1 and 10.</p>
+        <input type="number" id="guessInput" min="1" max="10">
+        <button onclick="checkGuess()">Guess</button>
+        <button onclick="guessGame()">New Game</button>
+    `;
+}
+
+function checkGuess() {
+    let guess = Number(document.getElementById("guessInput").value);
+    if (guess < 1 || guess > 10 || !Number.isInteger(guess)) {
+        showResult("Please enter a number from 1 to 10.");
+    } else if (guess === number) {
+        showResult("🎉 Correct! You won!");
+    } else if (guess < number) {
+        showResult("Too low! Try again.");
+    } else {
+        showResult("Too high! Try again.");
+    }
+}
+
+function rpsGame() {
+    document.getElementById("gameTitle").innerText = "✊ Rock Paper Scissors";
+    document.getElementById("gameContent").innerHTML = `
+        <p>Choose your move:</p>
+        <button onclick="playRPS('Rock')">🪨 Rock</button>
+        <button onclick="playRPS('Paper')">📄 Paper</button>
+        <button onclick="playRPS('Scissors')">✂️ Scissors</button>
+    `;
+}
+
+function playRPS(user) {
+    let choices = ["Rock", "Paper", "Scissors"];
+    let computer = choices[Math.floor(Math.random() * 3)];
+    let message = "You: " + user + " | Computer: " + computer + "<br>";
+
+    if (user === computer) message += "It's a Draw!";
+    else if (
+        (user === "Rock" && computer === "Scissors") ||
+        (user === "Paper" && computer === "Rock") ||
+        (user === "Scissors" && computer === "Paper")
+    ) message += "🎉 You Win!";
+    else message += "Computer Wins!";
+
+    showResult(message);
+}
+
+function typingGame() {
+    let sentence = "Practice makes a person perfect.";
+    document.getElementById("gameTitle").innerText = "⌨️ Typing Test";
+    document.getElementById("gameContent").innerHTML = `
+        <p id="sentence">${sentence}</p>
+        <textarea id="typingInput" rows="3" placeholder="Type the sentence here..." oninput="checkTyping()"></textarea>
+        <p id="typingResult"></p>
+        <button onclick="typingGame()">Try Again</button>
+    `;
+}
+
+function checkTyping() {
+    let sentence = document.getElementById("sentence").innerText;
+    let typed = document.getElementById("typingInput").value;
+
+    if (typed === sentence) {
+        document.getElementById("typingResult").innerText = "🎉 Perfect typing!";
+    } else {
+        document.getElementById("typingResult").innerText = "Keep typing...";
+    }
+}
+
+const questions = [
+    {q:"Which language is used to style web pages?", a:["HTML","CSS","Python"], correct:"CSS"},
+    {q:"What does HTML stand for?", a:["Hyper Text Markup Language","High Text Machine Language","Home Tool Markup Language"], correct:"Hyper Text Markup Language"},
+    {q:"Which one is a programming language?", a:["Chrome","Python","Windows"], correct:"Python"},
+    {q:"Which symbol is used for comments in JavaScript (single line)?", a:["//","##","**"], correct:"//"}
+];
+
+function quizGame() {
+    score = 0;
+    quizIndex = 0;
+    document.getElementById("gameTitle").innerText = "🧠 Quiz Game";
+    showQuestion();
+}
+
+function showQuestion() {
+    if (quizIndex >= questions.length) {
+        document.getElementById("gameContent").innerHTML = "Quiz completed!";
+        showResult("Your score: " + score + "/" + questions.length);
+        return;
+    }
+
+    let q = questions[quizIndex];
+    let html = "<p>" + q.q + "</p>";
+
+    q.a.forEach(option => {
+        html += `<button onclick="answerQuiz('${option.replace(/'/g, "\\'")}')">${option}</button>`;
+    });
+
+    document.getElementById("gameContent").innerHTML = html;
+}
+
+function answerQuiz(answer) {
+    if (answer === questions[quizIndex].correct) score++;
+    quizIndex++;
+    showQuestion();
+}
+
+function passwordGame() {
+    document.getElementById("gameTitle").innerText = "🔐 Password Generator";
+    document.getElementById("gameContent").innerHTML = `
+        <p>Choose password length:</p>
+        <input type="number" id="passLength" value="12" min="4" max="30">
+        <button onclick="generatePassword()">Generate</button>
+        <p id="passwordOutput"></p>
+        <button onclick="copyPassword()">Copy Password</button>
+    `;
+}
+
+function generatePassword() {
+    let length = Number(document.getElementById("passLength").value);
+    if (!Number.isInteger(length) || length < 4 || length > 30) {
+        showResult("Choose a length between 4 and 30.");
+        return;
+    }
+
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*";
+    let password = "";
+
+    for (let i = 0; i < length; i++) {
+        password += chars[Math.floor(Math.random() * chars.length)];
+    }
+
+    document.getElementById("passwordOutput").innerText = password;
+}
+
+function copyPassword() {
+    let password = document.getElementById("passwordOutput").innerText;
+    if (!password) {
+        showResult("Generate a password first.");
+        return;
+    }
+    navigator.clipboard.writeText(password).then(() => showResult("Password copied!"));
+}
+
+function calculatorGame() {
+    document.getElementById("gameTitle").innerText = "🧮 Calculator";
+    document.getElementById("gameContent").innerHTML = `
+        <input type="number" id="num1" placeholder="First number">
+        <input type="number" id="num2" placeholder="Second number">
+        <br>
+        <button onclick="calculate('+')">+</button>
+        <button onclick="calculate('-')">−</button>
+        <button onclick="calculate('*')">×</button>
+        <button onclick="calculate('/')">÷</button>
+    `;
+}
+
+function calculate(operator) {
+    let a = Number(document.getElementById("num1").value);
+    let b = Number(document.getElementById("num2").value);
+
+    if (document.getElementById("num1").value === "" || document.getElementById("num2").value === "") {
+        showResult("Please enter both numbers.");
+        return;
+    }
+
+    if (operator === "/" && b === 0) {
+        showResult("Cannot divide by zero.");
+        return;
+    }
+
+    let answer;
+    if (operator === "+") answer = a + b;
+    if (operator === "-") answer = a - b;
+    if (operator === "*") answer = a * b;
+    if (operator === "/") answer = a / b;
+
+    showResult("Answer: " + answer);
+}
+
+function showResult(message) {
+    document.getElementById("result").innerHTML = message;
+}
+
+</script>
+
+</body>
+</html>
